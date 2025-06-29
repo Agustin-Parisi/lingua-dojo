@@ -1,11 +1,24 @@
 "use client";
 import { useState } from "react";
 
-async function getAIFlashcards(words: string[]): Promise<{ word: string; definition: string; example: string }[]> {
+const LANGUAGES = [
+  { code: "en", label: "Inglés" },
+  { code: "es", label: "Español" },
+  { code: "fr", label: "Francés" },
+  { code: "de", label: "Alemán" },
+  { code: "it", label: "Italiano" },
+  { code: "pt", label: "Portugués" },
+  { code: "ru", label: "Ruso" },
+  { code: "zh", label: "Chino" },
+  { code: "ja", label: "Japonés" },
+  { code: "ar", label: "Árabe" },
+];
+
+async function getAIFlashcards(words: string[], language: string): Promise<{ word: string; definition: string; example: string }[]> {
   const res = await fetch("/api/ai-flashcards", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ words })
+    body: JSON.stringify({ words, language })
   });
   if (!res.ok) throw new Error("Error al generar tarjetas con IA");
   const data = await res.json();
@@ -19,6 +32,7 @@ export default function AIDeckPage() {
   const [cards, setCards] = useState<{ word: string; definition: string; example: string }[]>([]);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState("");
+  const [language, setLanguage] = useState("en");
 
   const handleGenerate = async () => {
     setError("");
@@ -34,7 +48,7 @@ export default function AIDeckPage() {
       return;
     }
     try {
-      const generated = await getAIFlashcards(words);
+      const generated = await getAIFlashcards(words, language);
       setCards(generated);
     } catch {
       setError("Error generando tarjetas con IA.");
@@ -57,6 +71,16 @@ export default function AIDeckPage() {
     <div className="min-h-screen flex flex-col items-center justify-center bg-[#232323] p-8">
       <h2 className="text-3xl font-bold mb-4 text-primary">Crear deck con IA</h2>
       <div className="w-full max-w-md bg-[#232323] rounded-lg shadow p-6 flex flex-col gap-4 border border-primary">
+        <label className="text-white font-semibold">Idioma de las definiciones y ejemplos:</label>
+        <select
+          className="border border-primary rounded px-3 py-2 bg-[#232323] text-white focus:outline-none focus:ring-2 focus:ring-primary mb-2"
+          value={language}
+          onChange={e => setLanguage(e.target.value)}
+        >
+          {LANGUAGES.map(l => (
+            <option key={l.code} value={l.code}>{l.label}</option>
+          ))}
+        </select>
         <textarea
           className="border border-primary rounded px-3 py-2 min-h-[80px] bg-[#232323] text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary"
           placeholder="Ingresa una lista de palabras, separadas por coma, espacio o salto de línea"

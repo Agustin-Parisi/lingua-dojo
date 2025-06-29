@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 // Reemplaza esto por tu clave real de OpenAI
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
+console.log("OPENAI_API_KEY:", OPENAI_API_KEY ? OPENAI_API_KEY.slice(0, 8) + "..." : "NO DEFINIDA");
 
 interface Card {
   word: string;
@@ -10,12 +11,27 @@ interface Card {
 }
 
 export async function POST(req: NextRequest) {
-  const { words } = await req.json();
+  const { words, language } = await req.json();
   if (!Array.isArray(words) || words.length === 0) {
     return NextResponse.json({ error: "Lista de palabras inválida" }, { status: 400 });
   }
 
-  const prompt = `Para cada palabra de la lista, dame una definición clara y un ejemplo de uso en inglés. Formato JSON: [{word, definition, example}]. Lista: ${words.join(", ")}`;
+  // Idioma para el prompt
+  const langLabel: Record<string, string> = {
+    en: "inglés",
+    es: "español",
+    fr: "francés",
+    de: "alemán",
+    it: "italiano",
+    pt: "portugués",
+    ru: "ruso",
+    zh: "chino",
+    ja: "japonés",
+    ar: "árabe"
+  };
+  const lang = langLabel[language] || "inglés";
+
+  const prompt = `Para cada palabra de la lista, dame una definición clara y un ejemplo de uso en ${lang}. Formato JSON: [{word, definition, example}]. Lista: ${words.join(", ")}`;
 
   const response = await fetch("https://api.openai.com/v1/chat/completions", {
     method: "POST",
@@ -35,6 +51,8 @@ export async function POST(req: NextRequest) {
   });
 
   if (!response.ok) {
+    const errorText = await response.text();
+    console.error("OpenAI API error:", errorText); // Log detallado
     return NextResponse.json({ error: "Error en la API de OpenAI" }, { status: 500 });
   }
 

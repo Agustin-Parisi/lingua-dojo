@@ -1,7 +1,6 @@
 "use client";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { sampleDeck } from "./sample-deck";
 
 interface Deck {
   name: string;

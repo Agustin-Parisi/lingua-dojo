@@ -8,18 +8,23 @@ interface Flashcard {
   example: string;
 }
 
+interface Deck {
+  name: string;
+  cards: Flashcard[];
+}
+
 export default function UserDeckStudy() {
   const params = useParams();
   const deckName = decodeURIComponent(params?.deck as string || "");
-  const [deck, setDeck] = useState<{ name: string; cards: Flashcard[] } | null>(null);
+  const [deck, setDeck] = useState<Deck | null>(null);
   const [current, setCurrent] = useState(0);
   const [flipped, setFlipped] = useState(false);
 
   useEffect(() => {
     if (typeof window !== "undefined" && deckName) {
-      const decks = JSON.parse(localStorage.getItem("lingua_decks") || "[]");
-      const found = decks.find((d: any) => d.name === deckName);
-      setDeck(found || null);
+      const decks: Deck[] = JSON.parse(localStorage.getItem("lingua_decks") || "[]");
+      const found = decks.find((d) => d.name === deckName) || null;
+      setDeck(found);
     }
   }, [deckName]);
 

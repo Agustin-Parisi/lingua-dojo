@@ -8,11 +8,16 @@ interface Flashcard {
   example: string;
 }
 
+interface Deck {
+  name: string;
+  cards: Flashcard[];
+}
+
 export default function EditDeckPage() {
   const params = useParams();
   const router = useRouter();
   const deckName = decodeURIComponent(params?.deck as string || "");
-  const [deck, setDeck] = useState<{ name: string; cards: Flashcard[] } | null>(null);
+  const [deck, setDeck] = useState<Deck | null>(null);
   const [cards, setCards] = useState<Flashcard[]>([]);
   const [name, setName] = useState(deckName);
   const [success, setSuccess] = useState(false);
@@ -22,9 +27,9 @@ export default function EditDeckPage() {
 
   useEffect(() => {
     if (typeof window !== "undefined" && deckName) {
-      const decks = JSON.parse(localStorage.getItem("lingua_decks") || "[]");
-      const found = decks.find((d: any) => d.name === deckName);
-      setDeck(found || null);
+      const decks: Deck[] = JSON.parse(localStorage.getItem("lingua_decks") || "[]");
+      const found = decks.find((d) => d.name === deckName) || null;
+      setDeck(found);
       setCards(found?.cards || []);
     }
   }, [deckName]);
@@ -48,8 +53,8 @@ export default function EditDeckPage() {
 
   const saveDeck = () => {
     if (!name || cards.length === 0) return;
-    const decks = JSON.parse(localStorage.getItem("lingua_decks") || "[]");
-    const updated = decks.map((d: any) => d.name === deckName ? { name, cards } : d);
+    const decks: Deck[] = JSON.parse(localStorage.getItem("lingua_decks") || "[]");
+    const updated = decks.map((d) => d.name === deckName ? { name, cards } : d);
     localStorage.setItem("lingua_decks", JSON.stringify(updated));
     setSuccess(true);
     setTimeout(() => router.push("/decks"), 1200);

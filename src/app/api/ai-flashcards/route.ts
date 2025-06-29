@@ -3,6 +3,12 @@ import { NextRequest, NextResponse } from "next/server";
 // Reemplaza esto por tu clave real de OpenAI
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
 
+interface Card {
+  word: string;
+  definition: string;
+  example: string;
+}
+
 export async function POST(req: NextRequest) {
   const { words } = await req.json();
   if (!Array.isArray(words) || words.length === 0) {
@@ -34,7 +40,7 @@ export async function POST(req: NextRequest) {
 
   const data = await response.json();
   // Extraer el JSON de la respuesta del modelo
-  let cards: any[] = [];
+  let cards: Card[] = [];
   try {
     const text = data.choices[0].message.content;
     cards = JSON.parse(text);

@@ -34,10 +34,6 @@ export default function EditDeckPage() {
     }
   }, [deckName]);
 
-  const updateCard = (idx: number, field: keyof Flashcard, value: string) => {
-    setCards(cards => cards.map((c, i) => i === idx ? { ...c, [field]: value } : c));
-  };
-
   const deleteCard = (idx: number) => {
     setCards(cards => cards.filter((_, i) => i !== idx));
   };

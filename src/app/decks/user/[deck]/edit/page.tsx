@@ -60,75 +60,57 @@ export default function EditDeckPage() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center p-8">
-      <h2 className="text-3xl font-bold mb-4 text-yellow-700 dark:text-yellow-300">Editar deck</h2>
-      <div className="w-full max-w-md bg-white dark:bg-gray-900 rounded-lg shadow p-6 flex flex-col gap-4">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-[#232323] p-8">
+      <h2 className="text-3xl font-bold mb-4 text-primary">Editar deck</h2>
+      <div className="w-full max-w-md bg-[#232323] rounded-lg shadow p-6 flex flex-col gap-4 border border-primary">
         <input
           type="text"
-          className="border rounded px-3 py-2 mb-2"
+          placeholder="Nombre del deck"
+          className="border border-primary rounded px-3 py-2 mb-2 bg-[#232323] text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary"
           value={name}
           onChange={e => setName(e.target.value)}
         />
-        <div className="flex flex-col gap-4">
-          {cards.map((card, idx) => (
-            <div key={idx} className="border rounded p-3 flex flex-col gap-2 bg-gray-50 dark:bg-gray-800">
-              <input
-                type="text"
-                className="border rounded px-2 py-1"
-                value={card.word}
-                onChange={e => updateCard(idx, "word", e.target.value)}
-                placeholder="Palabra"
-              />
-              <input
-                type="text"
-                className="border rounded px-2 py-1"
-                value={card.definition}
-                onChange={e => updateCard(idx, "definition", e.target.value)}
-                placeholder="Definición"
-              />
-              <input
-                type="text"
-                className="border rounded px-2 py-1"
-                value={card.example}
-                onChange={e => updateCard(idx, "example", e.target.value)}
-                placeholder="Ejemplo"
-              />
-              <button onClick={() => deleteCard(idx)} className="text-xs px-2 py-1 rounded bg-red-200 text-red-900 hover:bg-red-300 w-fit self-end">Eliminar tarjeta</button>
-            </div>
+        <ul className="mb-4 max-h-32 overflow-y-auto">
+          {cards.map((c, i) => (
+            <li key={i} className="mb-2 text-sm text-primary bg-[#1a2a20] rounded px-2 py-1">
+              <span className="font-bold">{c.word}</span>: {c.definition} <span className="italic">({c.example})</span>
+              <button onClick={() => deleteCard(i)} className="ml-2 text-xs px-2 py-1 rounded bg-red-200 text-red-900 hover:bg-red-300">Eliminar</button>
+            </li>
           ))}
-        </div>
-        <div className="flex flex-col gap-2 mt-4 border-t pt-4">
+        </ul>
+        <div className="flex flex-col gap-2">
           <input
             type="text"
             placeholder="Palabra"
-            className="border rounded px-2 py-1"
+            className="border border-primary rounded px-3 py-2 bg-[#232323] text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary"
             value={word}
             onChange={e => setWord(e.target.value)}
           />
           <input
             type="text"
             placeholder="Definición"
-            className="border rounded px-2 py-1"
+            className="border border-primary rounded px-3 py-2 bg-[#232323] text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary"
             value={definition}
             onChange={e => setDefinition(e.target.value)}
           />
           <input
             type="text"
             placeholder="Ejemplo"
-            className="border rounded px-2 py-1"
+            className="border border-primary rounded px-3 py-2 bg-[#232323] text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary"
             value={example}
             onChange={e => setExample(e.target.value)}
           />
           <button
             onClick={addCard}
-            className="mt-2 px-4 py-2 rounded bg-indigo-600 text-white font-semibold hover:bg-indigo-700 transition"
+            className="mt-2 px-4 py-2 rounded bg-[#123624] text-white font-semibold hover:bg-primary-dark transition"
+            type="button"
           >
-            Agregar nueva tarjeta
+            Agregar tarjeta
           </button>
         </div>
         <button
           onClick={saveDeck}
-          className="mt-4 px-4 py-2 rounded bg-yellow-600 text-white font-semibold hover:bg-yellow-700 transition"
+          className="mt-4 px-4 py-2 rounded bg-[#123624] text-white font-semibold hover:bg-primary-dark transition"
           disabled={!name || cards.length === 0}
         >
           Guardar cambios

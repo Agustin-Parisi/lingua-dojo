@@ -54,18 +54,18 @@ export default function AIDeckPage() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center p-8">
-      <h2 className="text-3xl font-bold mb-4 text-indigo-700 dark:text-indigo-300">Crear deck con IA</h2>
-      <div className="w-full max-w-md bg-white dark:bg-gray-900 rounded-lg shadow p-6 flex flex-col gap-4">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-[#232323] p-8">
+      <h2 className="text-3xl font-bold mb-4 text-primary">Crear deck con IA</h2>
+      <div className="w-full max-w-md bg-[#232323] rounded-lg shadow p-6 flex flex-col gap-4 border border-primary">
         <textarea
-          className="border rounded px-3 py-2 min-h-[80px]"
+          className="border border-primary rounded px-3 py-2 min-h-[80px] bg-[#232323] text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary"
           placeholder="Ingresa una lista de palabras, separadas por coma, espacio o salto de línea"
           value={input}
           onChange={e => setInput(e.target.value)}
         />
         <button
           onClick={handleGenerate}
-          className="px-4 py-2 rounded bg-indigo-600 text-white font-semibold hover:bg-indigo-700 transition"
+          className="px-4 py-2 rounded bg-[#123624] text-white font-semibold hover:bg-primary-dark transition"
           disabled={loading || !input.trim()}
         >
           {loading ? "Generando..." : "Generar tarjetas con IA"}
@@ -76,20 +76,20 @@ export default function AIDeckPage() {
             <input
               type="text"
               placeholder="Nombre del deck"
-              className="border rounded px-3 py-2 mb-2"
+              className="border border-primary rounded px-3 py-2 mb-2 bg-[#232323] text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary"
               value={deckName}
               onChange={e => setDeckName(e.target.value)}
             />
-            <ul className="max-h-48 overflow-y-auto border rounded p-2 bg-gray-50 dark:bg-gray-800 mb-2">
+            <ul className="max-h-48 overflow-y-auto border border-primary rounded p-2 bg-[#1a2a20] mb-2">
               {cards.map((card, i) => (
-                <li key={i} className="mb-2">
-                  <b>{card.word}</b>: {card.definition} <span className="italic">{card.example}</span>
+                <li key={i} className="mb-2 text-primary">
+                  <span className="font-bold text-[#3f9b0b]">{card.word}</span>: {card.definition} <span className="italic text-white">{card.example}</span>
                 </li>
               ))}
             </ul>
             <button
               onClick={saveDeck}
-              className="mt-2 px-4 py-2 rounded bg-green-600 text-white font-semibold hover:bg-green-700 transition"
+              className="mt-2 px-4 py-2 rounded bg-[#123624] text-white font-semibold hover:bg-primary-dark transition"
               disabled={!deckName}
             >
               Guardar deck

@@ -1,0 +1,45 @@
+import { NextRequest, NextResponse } from "next/server";
+
+// Reemplaza esto por tu clave real de OpenAI
+const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
+
+export async function POST(req: NextRequest) {
+  const { words } = await req.json();
+  if (!Array.isArray(words) || words.length === 0) {
+    return NextResponse.json({ error: "Lista de palabras inválida" }, { status: 400 });
+  }
+
+  const prompt = `Para cada palabra de la lista, dame una definición clara y un ejemplo de uso en inglés. Formato JSON: [{word, definition, example}]. Lista: ${words.join(", ")}`;
+
+  const response = await fetch("https://api.openai.com/v1/chat/completions", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${OPENAI_API_KEY}`,
+    },
+    body: JSON.stringify({
+      model: "gpt-3.5-turbo",
+      messages: [
+        { role: "system", content: "Eres un asistente que responde solo en JSON válido." },
+        { role: "user", content: prompt }
+      ],
+      temperature: 0.2,
+      max_tokens: 1024
+    })
+  });
+
+  if (!response.ok) {
+    return NextResponse.json({ error: "Error en la API de OpenAI" }, { status: 500 });
+  }
+
+  const data = await response.json();
+  // Extraer el JSON de la respuesta del modelo
+  let cards: any[] = [];
+  try {
+    const text = data.choices[0].message.content;
+    cards = JSON.parse(text);
+  } catch {
+    return NextResponse.json({ error: "No se pudo parsear la respuesta de la IA" }, { status: 500 });
+  }
+  return NextResponse.json({ cards });
+}

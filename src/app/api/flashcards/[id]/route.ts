@@ -26,10 +26,10 @@ export async function PUT(
   const { params } = context;
   try {
     const data = await req.json();
-    const { front, back, example } = data;
+    const { word, definition, example } = data;
     const updatedFlashcard = await prisma.flashcard.update({
       where: { id: Number(params.id) },
-      data: { front, back, example },
+      data: { word, definition, example },
     });
     return NextResponse.json(updatedFlashcard);
   } catch {

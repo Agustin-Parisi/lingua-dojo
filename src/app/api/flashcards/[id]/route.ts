@@ -4,8 +4,9 @@ import { prisma } from '@/lib/prisma';
 // GET /api/flashcards/[id] - Obtener una flashcard por ID
 export async function GET(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Record<string, string> }
 ) {
+  const { params } = context;
   try {
     const flashcard = await prisma.flashcard.findUnique({ where: { id: params.id } });
     if (!flashcard) return NextResponse.json({ error: 'Flashcard no encontrada' }, { status: 404 });
@@ -18,8 +19,9 @@ export async function GET(
 // PUT /api/flashcards/[id] - Actualizar una flashcard
 export async function PUT(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Record<string, string> }
 ) {
+  const { params } = context;
   try {
     const data = await req.json();
     const { front, back, example } = data;
@@ -36,8 +38,9 @@ export async function PUT(
 // DELETE /api/flashcards/[id] - Eliminar una flashcard
 export async function DELETE(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Record<string, string> }
 ) {
+  const { params } = context;
   try {
     await prisma.flashcard.delete({ where: { id: params.id } });
     return NextResponse.json({ message: 'Flashcard eliminada' });

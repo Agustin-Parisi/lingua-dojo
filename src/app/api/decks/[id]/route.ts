@@ -12,6 +12,7 @@ interface Flashcard {
 // GET /api/decks/[id] - Obtener un deck por ID
 export async function GET(
   req: NextRequest,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   context: any
 ) {
   const { params } = context;
@@ -40,6 +41,7 @@ export async function GET(
 // PUT /api/decks/[id] - Actualizar un deck y sus tarjetas
 export async function PUT(
   req: NextRequest,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   context: any
 ) {
   const { params } = context;
@@ -83,6 +85,7 @@ export async function PUT(
 // DELETE /api/decks/[id] - Eliminar un deck y sus tarjetas asociadas
 export async function DELETE(
   req: NextRequest,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   context: any
 ) {
   const { params } = context;

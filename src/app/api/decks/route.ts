@@ -17,7 +17,7 @@ interface Deck {
 }
 
 // GET /api/decks - Listar decks del usuario autenticado y el deck de prueba
-export async function GET(req: NextRequest) {
+export async function GET() {
   const session = await getServerSession(authOptions);
   try {
     let decks;

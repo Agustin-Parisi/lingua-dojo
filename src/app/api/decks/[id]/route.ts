@@ -12,8 +12,9 @@ interface Flashcard {
 // GET /api/decks/[id] - Obtener un deck por ID
 export async function GET(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Record<string, string> }
 ) {
+  const { params } = context;
   try {
     const deck = await prisma.deck.findUnique({
       where: { id: Number(params.id) },
@@ -39,8 +40,9 @@ export async function GET(
 // PUT /api/decks/[id] - Actualizar un deck y sus tarjetas
 export async function PUT(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Record<string, string> }
 ) {
+  const { params } = context;
   try {
     const data = await req.json();
     const { name, language, cards } = data;
@@ -81,8 +83,9 @@ export async function PUT(
 // DELETE /api/decks/[id] - Eliminar un deck y sus tarjetas asociadas
 export async function DELETE(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Record<string, string> }
 ) {
+  const { params } = context;
   try {
     const deckId = Number(params.id);
     // Eliminar todas las flashcards asociadas primero

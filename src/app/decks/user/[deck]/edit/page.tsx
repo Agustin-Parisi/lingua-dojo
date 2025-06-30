@@ -76,7 +76,7 @@ export default function EditDeckPage() {
         const data = await res.json();
         setError(data.error || "Error al actualizar el deck");
       }
-    } catch (e) {
+    } catch {
       setError("Error de red o del servidor");
     }
     setLoading(false);
@@ -93,7 +93,7 @@ export default function EditDeckPage() {
         const data = await res.json();
         setError(data.error || "Error al eliminar el deck");
       }
-    } catch (e) {
+    } catch {
       setError("Error de red o del servidor");
     }
   };

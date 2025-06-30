@@ -15,6 +15,8 @@ export default function NewDeckPage() {
   const [definition, setDefinition] = useState("");
   const [example, setExample] = useState("");
   const [success, setSuccess] = useState(false);
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
 
   const addCard = () => {
@@ -26,16 +28,34 @@ export default function NewDeckPage() {
     }
   };
 
-  const saveDeck = () => {
+  const saveDeck = async () => {
+    setError("");
+    setSuccess(false);
+    setLoading(true);
     if (deckName && cards.length > 0) {
-      // Guardar en localStorage (puede reemplazarse por backend en el futuro)
-      const decks = JSON.parse(localStorage.getItem("lingua_decks") || "[]");
-      decks.push({ name: deckName, cards });
-      localStorage.setItem("lingua_decks", JSON.stringify(decks));
-      setSuccess(true);
-      setDeckName("");
-      setCards([]);
+      try {
+        const res = await fetch("/api/decks", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ name: deckName, language: "es", flashcards: cards }),
+        });
+        if (res.ok) {
+          setSuccess(true);
+          setDeckName("");
+          setCards([]);
+        } else {
+          const data = await res.json();
+          if (res.status === 401) {
+            setError("Debes iniciar sesión para crear un deck.");
+          } else {
+            setError(data.error || "Error al crear el deck");
+          }
+        }
+      } catch (e) {
+        setError("Error de red o del servidor");
+      }
     }
+    setLoading(false);
   };
 
   return (
@@ -98,12 +118,20 @@ export default function NewDeckPage() {
         <button
           onClick={saveDeck}
           className="mt-4 px-4 py-2 rounded bg-[#123624] text-white font-semibold hover:bg-primary-dark transition"
-          disabled={!deckName || cards.length === 0}
+          disabled={!deckName || cards.length === 0 || loading}
         >
-          Guardar deck
+          {loading ? "Guardando..." : "Guardar deck"}
         </button>
         {success && <div className="text-green-600 mt-2">¡Deck creado correctamente!</div>}
+        {error && <div className="text-red-600 mt-2">{error}</div>}
       </div>
+      <button
+        onClick={() => router.push("/")}
+        className="mt-8 px-4 py-2 rounded bg-gray-700 text-white font-semibold hover:bg-gray-900 transition"
+        type="button"
+      >
+        Volver al inicio
+      </button>
     </div>
   );
 }

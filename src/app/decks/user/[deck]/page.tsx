@@ -9,24 +9,27 @@ interface Flashcard {
 }
 
 interface Deck {
+  id: number;
   name: string;
   cards: Flashcard[];
 }
 
 export default function UserDeckStudy() {
   const params = useParams();
-  const deckName = decodeURIComponent(params?.deck as string || "");
+  const deckId = params?.deck as string;
   const [deck, setDeck] = useState<Deck | null>(null);
   const [current, setCurrent] = useState(0);
   const [flipped, setFlipped] = useState(false);
 
   useEffect(() => {
-    if (typeof window !== "undefined" && deckName) {
-      const decks: Deck[] = JSON.parse(localStorage.getItem("lingua_decks") || "[]");
-      const found = decks.find((d) => d.name === deckName) || null;
-      setDeck(found);
+    if (deckId) {
+      fetch(`/api/decks/${deckId}`)
+        .then((res) => res.json())
+        .then((data) => {
+          setDeck(data);
+        });
     }
-  }, [deckName]);
+  }, [deckId]);
 
   if (!deck) {
     return <div className="min-h-screen flex items-center justify-center text-gray-500">Deck no encontrado.</div>;
@@ -38,6 +41,7 @@ export default function UserDeckStudy() {
     setFlipped(false);
     setCurrent((prev) => (prev + 1 < deck.cards.length ? prev + 1 : 0));
   };
+
   const prevCard = () => {
     setFlipped(false);
     setCurrent((prev) => (prev - 1 >= 0 ? prev - 1 : deck.cards.length - 1));

@@ -1,6 +1,6 @@
 # Lingua Dojo
 
-Aplicación web de flashcards tipo Anki construida con Next.js, TypeScript y Tailwind CSS.
+Aplicación web de flashcards construida con Next.js, TypeScript y Tailwind CSS.
 
 ## Características principales
 
@@ -35,4 +35,3 @@ Abre [http://localhost:3000](http://localhost:3000) en tu navegador para ver la 
 ## Notas
 
 - Proyecto generado con `create-next-app` y configurado para TypeScript, Tailwind CSS y ESLint.
-- Personaliza este README según evolucione el proyecto.

@@ -3,39 +3,47 @@ import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 interface Flashcard {
+  id?: number;
   word: string;
   definition: string;
   example: string;
 }
 
 interface Deck {
+  id: number;
   name: string;
+  language: string;
   cards: Flashcard[];
 }
 
 export default function EditDeckPage() {
   const params = useParams();
   const router = useRouter();
-  const deckName = decodeURIComponent(params?.deck as string || "");
+  const deckId = params?.deck as string;
   const [deck, setDeck] = useState<Deck | null>(null);
   const [cards, setCards] = useState<Flashcard[]>([]);
-  const [name, setName] = useState(deckName);
+  const [name, setName] = useState("");
   const [success, setSuccess] = useState(false);
+  const [error, setError] = useState("");
   const [word, setWord] = useState("");
   const [definition, setDefinition] = useState("");
   const [example, setExample] = useState("");
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    if (typeof window !== "undefined" && deckName) {
-      const decks: Deck[] = JSON.parse(localStorage.getItem("lingua_decks") || "[]");
-      const found = decks.find((d) => d.name === deckName) || null;
-      setDeck(found);
-      setCards(found?.cards || []);
+    if (deckId) {
+      fetch(`/api/decks/${deckId}`)
+        .then((res) => res.json())
+        .then((data) => {
+          setDeck(data);
+          setCards(data.cards || []);
+          setName(data.name || "");
+        });
     }
-  }, [deckName]);
+  }, [deckId]);
 
   const deleteCard = (idx: number) => {
-    setCards(cards => cards.filter((_, i) => i !== idx));
+    setCards((cards) => cards.filter((_, i) => i !== idx));
   };
 
   const addCard = () => {
@@ -47,13 +55,47 @@ export default function EditDeckPage() {
     }
   };
 
-  const saveDeck = () => {
-    if (!name || cards.length === 0) return;
-    const decks: Deck[] = JSON.parse(localStorage.getItem("lingua_decks") || "[]");
-    const updated = decks.map((d) => d.name === deckName ? { name, cards } : d);
-    localStorage.setItem("lingua_decks", JSON.stringify(updated));
-    setSuccess(true);
-    setTimeout(() => router.push("/decks"), 1200);
+  const saveDeck = async () => {
+    setError("");
+    setSuccess(false);
+    setLoading(true);
+    if (!name || cards.length === 0) {
+      setLoading(false);
+      return;
+    }
+    try {
+      const res = await fetch(`/api/decks/${deckId}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, cards }),
+      });
+      if (res.ok) {
+        setSuccess(true);
+        setTimeout(() => router.push("/decks"), 1200);
+      } else {
+        const data = await res.json();
+        setError(data.error || "Error al actualizar el deck");
+      }
+    } catch (e) {
+      setError("Error de red o del servidor");
+    }
+    setLoading(false);
+  };
+
+  const deleteDeck = async () => {
+    setError("");
+    if (!window.confirm("¿Eliminar este deck?")) return;
+    try {
+      const res = await fetch(`/api/decks/${deckId}`, { method: "DELETE" });
+      if (res.ok) {
+        router.push("/decks");
+      } else {
+        const data = await res.json();
+        setError(data.error || "Error al eliminar el deck");
+      }
+    } catch (e) {
+      setError("Error de red o del servidor");
+    }
   };
 
   if (!deck) {
@@ -112,11 +154,18 @@ export default function EditDeckPage() {
         <button
           onClick={saveDeck}
           className="mt-4 px-4 py-2 rounded bg-[#123624] text-white font-semibold hover:bg-primary-dark transition"
-          disabled={!name || cards.length === 0}
+          disabled={!name || cards.length === 0 || loading}
         >
-          Guardar cambios
+          {loading ? "Guardando..." : "Guardar cambios"}
+        </button>
+        <button
+          onClick={deleteDeck}
+          className="mt-2 px-4 py-2 rounded bg-red-700 text-white font-semibold hover:bg-red-900 transition"
+        >
+          Eliminar deck
         </button>
         {success && <div className="text-green-600 mt-2">¡Deck actualizado!</div>}
+        {error && <div className="text-red-600 mt-2">{error}</div>}
       </div>
     </div>
   );

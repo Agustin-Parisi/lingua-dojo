@@ -15,9 +15,9 @@ export async function GET() {
 export async function POST(req: NextRequest) {
   try {
     const data = await req.json();
-    const { front, back, example, deckId } = data;
+    const { word, definition, example, deckId } = data;
     const newFlashcard = await prisma.flashcard.create({
-      data: { front, back, example, deckId },
+      data: { word, definition, example, deckId },
     });
     return NextResponse.json(newFlashcard, { status: 201 });
   } catch {

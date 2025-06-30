@@ -2,10 +2,12 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 
 // GET /api/flashcards/[id] - Obtener una flashcard por ID
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function GET(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  context: any
 ) {
+  const { params } = context;
   try {
     const flashcard = await prisma.flashcard.findUnique({ where: { id: Number(params.id) } });
     if (!flashcard) return NextResponse.json({ error: 'Flashcard no encontrada' }, { status: 404 });
@@ -16,10 +18,12 @@ export async function GET(
 }
 
 // PUT /api/flashcards/[id] - Actualizar una flashcard
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function PUT(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  context: any
 ) {
+  const { params } = context;
   try {
     const data = await req.json();
     const { front, back, example } = data;
@@ -34,10 +38,12 @@ export async function PUT(
 }
 
 // DELETE /api/flashcards/[id] - Eliminar una flashcard
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function DELETE(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  context: any
 ) {
+  const { params } = context;
   try {
     await prisma.flashcard.delete({ where: { id: Number(params.id) } });
     return NextResponse.json({ message: 'Flashcard eliminada' });

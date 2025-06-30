@@ -7,7 +7,7 @@ export async function GET(
   { params }: { params: { id: string } }
 ) {
   try {
-    const flashcard = await prisma.flashcard.findUnique({ where: { id: params.id } });
+    const flashcard = await prisma.flashcard.findUnique({ where: { id: Number(params.id) } });
     if (!flashcard) return NextResponse.json({ error: 'Flashcard no encontrada' }, { status: 404 });
     return NextResponse.json(flashcard);
   } catch {
@@ -24,7 +24,7 @@ export async function PUT(
     const data = await req.json();
     const { front, back, example } = data;
     const updatedFlashcard = await prisma.flashcard.update({
-      where: { id: params.id },
+      where: { id: Number(params.id) },
       data: { front, back, example },
     });
     return NextResponse.json(updatedFlashcard);
@@ -39,7 +39,7 @@ export async function DELETE(
   { params }: { params: { id: string } }
 ) {
   try {
-    await prisma.flashcard.delete({ where: { id: params.id } });
+    await prisma.flashcard.delete({ where: { id: Number(params.id) } });
     return NextResponse.json({ message: 'Flashcard eliminada' });
   } catch {
     return NextResponse.json({ error: 'Error al eliminar la flashcard' }, { status: 500 });

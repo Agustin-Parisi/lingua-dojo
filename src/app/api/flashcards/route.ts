@@ -6,7 +6,7 @@ export async function GET() {
   try {
     const flashcards = await prisma.flashcard.findMany();
     return NextResponse.json(flashcards);
-  } catch (error) {
+  } catch {
     return NextResponse.json({ error: 'Error al obtener las flashcards' }, { status: 500 });
   }
 }
@@ -20,7 +20,7 @@ export async function POST(req: NextRequest) {
       data: { front, back, example, deckId },
     });
     return NextResponse.json(newFlashcard, { status: 201 });
-  } catch (error) {
+  } catch {
     return NextResponse.json({ error: 'Error al crear la flashcard' }, { status: 500 });
   }
 }

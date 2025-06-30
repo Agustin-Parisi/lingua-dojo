@@ -49,7 +49,7 @@ export async function GET(req: NextRequest) {
       })),
     }));
     return NextResponse.json(result);
-  } catch (error) {
+  } catch {
     return NextResponse.json({ error: 'Error al obtener los decks' }, { status: 500 });
   }
 }
@@ -84,7 +84,7 @@ export async function POST(req: NextRequest) {
         example: card.example,
       })),
     }, { status: 201 });
-  } catch (error) {
+  } catch {
     return NextResponse.json({ error: 'Error al crear el deck' }, { status: 500 });
   }
 }

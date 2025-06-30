@@ -51,7 +51,7 @@ export default function NewDeckPage() {
             setError(data.error || "Error al crear el deck");
           }
         }
-      } catch (e) {
+      } catch {
         setError("Error de red o del servidor");
       }
     }

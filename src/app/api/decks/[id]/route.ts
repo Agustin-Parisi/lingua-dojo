@@ -31,7 +31,7 @@ export async function GET(
         example: card.example,
       })),
     });
-  } catch (error) {
+  } catch {
     return NextResponse.json({ error: 'Error al obtener el deck' }, { status: 500 });
   }
 }
@@ -73,7 +73,7 @@ export async function PUT(
       include: { cards: true },
     });
     return NextResponse.json(updatedDeck);
-  } catch (error) {
+  } catch {
     return NextResponse.json({ error: 'Error al actualizar el deck' }, { status: 500 });
   }
 }
@@ -90,7 +90,7 @@ export async function DELETE(
     // Ahora sí, eliminar el deck
     await prisma.deck.delete({ where: { id: deckId } });
     return NextResponse.json({ message: 'Deck eliminado' });
-  } catch (error) {
+  } catch {
     return NextResponse.json({ error: 'Error al eliminar el deck' }, { status: 500 });
   }
 }
